@@ -7,7 +7,6 @@ class Controller_Hauth extends Controller {
     function before()
     {
         parent::before();
-        $this->session = Session::instance();
         $config = Kohana::$config->load('hauth');
         $this->hybridauth = new Hybrid_Auth($config->get('hauth'));
     }
@@ -21,6 +20,7 @@ class Controller_Hauth extends Controller {
 
         if (!empty($user)) {
             // store userdata to db if need
+            $this->session = Session::instance();
             $this->session->bind('profile_url', $user['profileURL']);
         }
 
@@ -34,8 +34,8 @@ class Controller_Hauth extends Controller {
 
         if (!empty($provider))
         {
-            $adapter = $this->hybridauth->authenticate($provider, array("hauth_return_to'=>'/hauth/endlogin/$provider?forward=". @$_GET['forward']));
-            $this->request->redirect("/hauth/endlogin/$provider?forward=$forward");
+            $adapter = $this->hybridauth->authenticate($provider, array("hauth_return_to'=>'/hauth/endlogin/$provider?forward=".@$_GET['forward']));
+            $this->request->redirect("/hauth/endlogin/$provider?forward=".@$_GET['forward']);
         } else
         {
             Hybrid_Endpoint::process();
